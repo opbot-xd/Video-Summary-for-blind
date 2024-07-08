@@ -1,2 +1,7 @@
+myenv
 *venv
+*.env
+*.mp3
+*.mp4
+*.srt
 *.env
