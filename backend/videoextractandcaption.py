@@ -95,7 +95,7 @@ def finalcandi(videopath):
         candi_chunk=frames_in_local_max(frames,frame_diffs)
         extracted_candi_frames.extend(candi_chunk)
         return extracted_candi_frames
-videopath=""
+videopath="t.mp4"
 arr=finalcandi(videopath)
 #image captioning
 #pretrained model from hugging face
@@ -107,7 +107,6 @@ for img in arr:
    img1=cv.cvtColor(img,cv.COLOR_BGR2RGB)
    img2=Image.fromarray(img1)
    #img.convert("RGB")
-   img2.show()
    inputs=processor(img2,return_tensors='pt')
    out=model.generate(**inputs)
    print(processor.decode(out[0], skip_special_tokens=True))

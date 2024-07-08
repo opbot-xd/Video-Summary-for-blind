@@ -4,7 +4,13 @@ django-environ==0.11.2
 djangorestframework==3.15.2
 sqlparse==0.5.0
 tzdata==2024.1
-numpy==2.0.0
-whisper-timestamped==1.15.4
-google-generativeai==0.7.1
+google-generativeai
 python-dotenv
+opencv-python
+numpy
+scipy
+Pillow
+transformers
+whisper-timestamped
+moviepy
+torch
