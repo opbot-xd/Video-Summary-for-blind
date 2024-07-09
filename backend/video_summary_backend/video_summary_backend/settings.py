@@ -29,7 +29,7 @@ SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'kubernetes.docker.internal']
 
 
 # Application definition
@@ -42,9 +42,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "rest_framework",
-    "backendapp"
+    "backendapp",
 ]
-
+INSTALLED_APPS += ['celery']
+CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Replace with your Redis server URL
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
