@@ -4,16 +4,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import "package:video_summarizer/presentation/video_screen/bloc/video_screen_bloc.dart";
 import "package:video_summarizer/presentation/video_screen/bloc/video_screen_event.dart";
 import "package:video_summarizer/presentation/video_screen/bloc/video_screen_state.dart";
+import "package:video_player/video_player.dart";
 //import "package:audioplayers/audioplayers.dart";
 //import "package:assets_audio_player/assets_audio_player.dart";
 //import "package:just_audio/just_audio.dart";
 import 'package:camera/camera.dart';
+import 'dart:io';
 //dispose cameracontroller
 class VideoScreen extends StatelessWidget{
   const VideoScreen({super.key});
   @override
   Widget build(BuildContext context){
     late var file;
+    bool recordingrn=false;
     
     //final player=AudioPlayer();
     Future<void> play()async{
@@ -43,13 +46,24 @@ class VideoScreen extends StatelessWidget{
 
     initfunc();
     BlocListener<TimerBloc,TimerState>(
+      
       listener:(context,state)async{
+        print("called");
         if(state.timeron==true){
+          print("tru");
           await Future.delayed(Duration(seconds:60));
           if(BlocProvider.of<TimerBloc>(context).state.timeron==true){
           file= await _cameraController.stopVideoRecording();
-          BlocProvider.of<RecordBloc>(context).add(EndRecord());
-          BlocProvider.of<TimerBloc>(context).add(timerEnd());}
+          //print(file);
+          //BlocProvider.of<RecordBloc>(context).add(EndRecord());
+          BlocProvider.of<TimerBloc>(context).add(timerEnd());
+          VideoPlayerController con=new VideoPlayerController.file(file.path);
+          await con.initialize();
+          print("saveee");
+          recordingrn=false;
+
+          print(con.value.duration);
+          }
         }
 
 
@@ -76,7 +90,7 @@ class VideoScreen extends StatelessWidget{
                 child: CameraPreview(_cameraController))
               ) ),
             //CameraPreview(_cameraController),
-          
+             
           SizedBox(
             height: 300,
             width:300,
@@ -84,24 +98,34 @@ class VideoScreen extends StatelessWidget{
               shape:CircleBorder(),
               onPressed:()async{
                 print("yohoo");
-                BlocListener<RecordBloc,RecordState>(
-                  listener:(context,state)async{
-                    if(state.isRecording==false){
+                
+                    //if(state.isRecording==false){
+                    if(!recordingrn){
+                      print("why");
                       await _cameraController.prepareForVideoRecording();
                       await _cameraController.startVideoRecording();
-                      BlocProvider.of<RecordBloc>(context).add(StartRecord());
+                      //BlocProvider.of<RecordBloc>(context).add(StartRecord());
                       BlocProvider.of<TimerBloc>(context).add(timerStart());
+                      recordingrn=true;
 
                     }else{
+                      print("Hi");
                       file= await _cameraController.stopVideoRecording();
-                      BlocProvider.of<RecordBloc>(context).add(EndRecord());
+                      //BlocProvider.of<RecordBloc>(context).add(EndRecord());
                       BlocProvider.of<TimerBloc>(context).add(timerEnd());
+                      File fil=File(file.path);
+                      VideoPlayerController con=VideoPlayerController.file(fil);
+                      await con.initialize();
+                      print("saveee");
+                      recordingrn=false;
+
+                      print(con.value.duration);
                     }
-                  },
-                );
+                  
+                
                 //to prevent multiple clicks inshort tie 
                 await Future.delayed(
-               const Duration(milliseconds: 1500));
+                const Duration(milliseconds: 500));
                 
 
                 
