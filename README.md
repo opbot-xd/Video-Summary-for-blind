@@ -10,6 +10,7 @@ The process used for caption generation is as follows:
 The frontend utilizes bloc state management to ensure a smooth user experience.  
 For faster processing celery and redis have been used so that backend processing can be asynchronous.  
 The summary returned by Gemini is read using text-to-speech for the blind person.  
+![WhatsApp Image 2024-07-10 at 22 59 58_4aea107f](https://github.com/MS-githubaccnt/Video-Summary-for-blind/assets/152601846/f24cdf06-2152-4663-b85f-903baae1cc56)
 
 # SETUP
 ## Backend setup:
