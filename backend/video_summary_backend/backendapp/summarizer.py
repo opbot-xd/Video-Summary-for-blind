@@ -176,5 +176,3 @@ def generate_summary(video_path):
 
     # Return the summary
     return response.text
-
-
