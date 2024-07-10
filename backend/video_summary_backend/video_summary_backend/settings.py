@@ -45,8 +45,8 @@ INSTALLED_APPS = [
     "backendapp",
 ]
 INSTALLED_APPS += ['celery']
-CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Replace with your Redis server URL
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
+CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 MIDDLEWARE = [
