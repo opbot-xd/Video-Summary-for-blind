@@ -6,18 +6,23 @@ import "package:video_summarizer/presentation/video_screen/bloc/video_screen_eve
 import "package:video_summarizer/presentation/video_screen/bloc/video_screen_state.dart";
 import "package:video_player/video_player.dart";
 import "package:audioplayers/audioplayers.dart";
-//import "package:assets_audio_player/assets_audio_player.dart";
-//import "package:just_audio/just_audio.dart";
 import 'package:camera/camera.dart';
 import 'dart:io';
+import "dart:convert";
+import "package:http/http.dart" as http;
+import 'package:flutter_tts/flutter_tts.dart';
+
 //dispose cameracontroller
 class VideoScreen extends StatelessWidget{
   const VideoScreen({super.key});
   @override
   Widget build(BuildContext context){
     late var file;
+    var video_id;
     bool recordingrn=false;
-    
+    String video2backurl="http://10.0.2.2:8000/api/upload";
+    String sumFromBackUrl="http://10.0.2.2:8000/api/status/$video_id";
+   // print(sumFromBackUrl);
     //final player=AudioPlayer();
     Future<void> play()async{
       print("hi");
@@ -62,9 +67,54 @@ class VideoScreen extends StatelessWidget{
           await con.initialize();
           print("saveee");
           recordingrn=false;
+          File fil=file.path;
 
           print(con.value.duration);
           playOnRecordStop();
+          var sendingData={
+                        "video_file":fil
+                      };
+                      try{
+                        var response=await http.post(Uri.parse(video2backurl),
+                        headers:{"Content-type":"application/json"},
+                        body:jsonEncode(sendingData));
+                        if(response.statusCode==201){
+                          print("video sent");
+                          //COnvert from strring to int
+                          var body=jsonDecode(response.body) as Map<String,dynamic>;
+                          video_id=body["video_id"];
+                          void getsend()async{
+                            await Future.delayed(const Duration(seconds: 10));
+                            var response1=await http.get(Uri.parse(sumFromBackUrl));
+                            if (response1.statusCode==200){
+                              var bodyresp=json.decode(response1.body) as Map<String,dynamic>;
+                              if(bodyresp["status"]=="Completed"){
+                                var summary=bodyresp["summary"];
+                                FlutterTts tts=FlutterTts();
+                                tts.setLanguage("en-US");
+                                tts.speak(summary);
+
+                              }
+                              else{
+                                getsend();  
+                              }
+
+
+                            }else{
+                              print("Omaewa erroru");
+                            }
+
+
+                          }
+                          getsend();
+
+                        }else{
+                          print("An error happened");
+                        }
+                      }catch(e){
+                        print("Error happened $e");
+                      }
+          
           }
         }
 
@@ -123,6 +173,49 @@ class VideoScreen extends StatelessWidget{
 
                       print(con.value.duration);
                       playOnRecordStop();
+                      var sendingData={
+                        "video_file":fil
+                      };
+                      try{
+                        var response=await http.post(Uri.parse(video2backurl),
+                        headers:{"Content-type":"application/json"},
+                        body:jsonEncode(sendingData));
+                        if(response.statusCode==201){
+                          print("video sent");
+                          //COnvert from strring to int
+                          var body=jsonDecode(response.body) as Map<String,dynamic>;
+                          video_id=body["video_id"];
+                          void getsend()async{
+                            await Future.delayed(const Duration(seconds: 10));
+                            var response1=await http.get(Uri.parse(sumFromBackUrl));
+                            if (response1.statusCode==200){
+                              var bodyresp=json.decode(response1.body) as Map<String,dynamic>;
+                              if(bodyresp["status"]=="Completed"){
+                                var summary=bodyresp["summary"];
+                                FlutterTts tts=FlutterTts();
+                                tts.setLanguage("en-US");
+                                tts.speak(summary);
+
+                              }
+                              else{
+                                getsend();  
+                              }
+
+
+                            }else{
+                              print("Omaewa erroru");
+                            }
+
+
+                          }
+                          getsend();
+
+                        }else{
+                          print("An error happened");
+                        }
+                      }catch(e){
+                        print("Error happened $e");
+                      }
                     }
                   
                 

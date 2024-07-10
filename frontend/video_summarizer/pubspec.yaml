@@ -41,6 +41,7 @@ dependencies:
   just_audio: ^0.9.38
   camera: ^0.10.5+9
   video_player: ^2.8.5
+  flutter_tts: ^4.0.2
 
 dev_dependencies:
   flutter_test:
