@@ -5,7 +5,7 @@ import "package:video_summarizer/presentation/video_screen/bloc/video_screen_blo
 import "package:video_summarizer/presentation/video_screen/bloc/video_screen_event.dart";
 import "package:video_summarizer/presentation/video_screen/bloc/video_screen_state.dart";
 import "package:video_player/video_player.dart";
-//import "package:audioplayers/audioplayers.dart";
+import "package:audioplayers/audioplayers.dart";
 //import "package:assets_audio_player/assets_audio_player.dart";
 //import "package:just_audio/just_audio.dart";
 import 'package:camera/camera.dart';
@@ -21,19 +21,20 @@ class VideoScreen extends StatelessWidget{
     //final player=AudioPlayer();
     Future<void> play()async{
       print("hi");
-   // String audpath="Button2record.mp3";
-    //final player=AudioPlayer();
-  //  await player.play(AssetSource("Button2record.mp3"));
-    //final player2=new AudioCache("Button2record.mp3");
-    //AudioCache aud=AudioCache();
-    //audPla0
-    //y=await aud.play("Button2record.mp3");
-    //await player.dispose();
-    
-    //final duration=await player.setAsset("assets/Button2record.mp3");
-    //player.play();
-
+    final player=AudioPlayer();
+    await player.play(AssetSource("Button2record1.mp3"));
     }
+    Future<void> playOnRecord()async{
+      print("hi");
+    final player=AudioPlayer();
+    await player.play(AssetSource("RecordingHasStarted.mp3"));
+    }
+    Future<void> playOnRecordStop()async{
+      print("hi");
+    final player=AudioPlayer();
+    await player.play(AssetSource("RecordStop.mp3"));
+    }
+    play();
 
     late CameraController _cameraController;
     void initfunc()async{
@@ -42,7 +43,7 @@ class VideoScreen extends StatelessWidget{
       _cameraController = CameraController(back, ResolutionPreset.medium);
       await _cameraController.initialize();
       BlocProvider.of<VideoBloc>(context).add(Loaded());
-    } 
+    }
 
     initfunc();
     BlocListener<TimerBloc,TimerState>(
@@ -63,6 +64,7 @@ class VideoScreen extends StatelessWidget{
           recordingrn=false;
 
           print(con.value.duration);
+          playOnRecordStop();
           }
         }
 
@@ -107,7 +109,7 @@ class VideoScreen extends StatelessWidget{
                       //BlocProvider.of<RecordBloc>(context).add(StartRecord());
                       BlocProvider.of<TimerBloc>(context).add(timerStart());
                       recordingrn=true;
-
+                      playOnRecord();
                     }else{
                       print("Hi");
                       file= await _cameraController.stopVideoRecording();
@@ -120,6 +122,7 @@ class VideoScreen extends StatelessWidget{
                       recordingrn=false;
 
                       print(con.value.duration);
+                      playOnRecordStop();
                     }
                   
                 
