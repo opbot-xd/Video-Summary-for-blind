@@ -1,0 +1,30 @@
+services:
+  backend:
+    build:
+      context: ./backend/video_summary_backend
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./backend/video_summary_backend:/app
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./backend/video_summary_backend/.env
+    depends_on:
+      - redis
+
+  celery_worker:
+    build:
+      context: ./backend/video_summary_backend
+    command: celery -A video_summary_backend worker --pool=solo -l info
+    volumes:
+      - ./backend/video_summary_backend:/app
+    env_file:
+      - ./backend/video_summary_backend/.env
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+  
